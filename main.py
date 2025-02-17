@@ -25,3 +25,24 @@ async def user_sign_up(data: dict):
         "id": id_usuario,
         "name": data["name"],
     }
+
+@api.get("/usuarios/{user_id}", tags=["Usuarios"])
+async def get_user(user_id: str):
+    try:
+        user = next((u for u in usuarios if u["id"] == user_id), None)
+        if user is not None:
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content=user
+            )
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "response": "No se ha podido encontrar el usuario",
+            }
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
